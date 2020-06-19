@@ -9,15 +9,14 @@ Documentation
 -------------
 **Getting Started**
 
-#* :doc:`installing`
+* :doc:`installing`
 
 #.. toctree::
-#   :maxdepth: 1
-#   :hidden:
-#   :caption: Getting Started
+   :maxdepth: 1
+   :hidden:
+   :caption: Getting Started
 #
-#   installing
-#   basic_usage
+   installing 
 #   merging_notebook 
 #   lazy_methods 
 
