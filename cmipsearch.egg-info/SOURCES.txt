@@ -1,0 +1,9 @@
+setup.py
+cmipsearch/__init__.py
+cmipsearch/cmip6.py
+cmipsearch/models.py
+cmipsearch.egg-info/PKG-INFO
+cmipsearch.egg-info/SOURCES.txt
+cmipsearch.egg-info/dependency_links.txt
+cmipsearch.egg-info/not-zip-safe
+cmipsearch.egg-info/top_level.txt

@@ -1,0 +1,22 @@
+Metadata-Version: 1.2
+Name: cmipsearch
+Version: 0.1.0
+Summary: Search and download CMIP data
+Home-page: https://github.com/r4ecology/cmipsearch
+Author: Robert Wilson
+Author-email: rwi@pml.ac.uk
+Maintainer: Robert Wilson
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/r4ecology/cmipsearch/issues
+Project-URL: Source Code, https://github.com/r4ecology/cmipsearch
+Description: 
+        **cmipsearch** is a Python package providing tools for searching and downloading CMIP data.
+        
+        
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Requires-Python: >=3.6.1
