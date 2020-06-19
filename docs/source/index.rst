@@ -11,7 +11,7 @@ Documentation
 
 * :doc:`installing`
 
-#.. toctree::
+.. toctree::
    :maxdepth: 1
    :hidden:
    :caption: Getting Started
