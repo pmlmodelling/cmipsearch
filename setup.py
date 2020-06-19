@@ -41,7 +41,7 @@ setup(name='cmipsearch',
         'setuptools-git',
         'wheel',
     ],
-      #install_requires = REQUIREMENTS,
+      install_requires = "pandas",
       zip_safe=False)
 
 
