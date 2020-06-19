@@ -9,7 +9,7 @@ LONG_DESCRIPTION = """
 
 PROJECT_URLS = {
     "Bug Tracker": "https://github.com/r4ecology/cmipsearch/issues",
-    #"Documentation": "https://nctoolkit.readthedocs.io/en/latest",
+    "Documentation": "https://cmipsearch.readthedocs.io/en/latest",
     "Source Code": "https://github.com/r4ecology/cmipsearch",
 }
 

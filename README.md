@@ -14,10 +14,11 @@ This package will work with Python 3.6 upwards.
 ## Installation
 
 
-You can install the development version of nctoolkit using using pip as follows.
+You can install the development version of cmipsearch using using pip as follows.
 ```sh
 pip install git+https://github.com/r4ecology/cmipsearch.git
 ```
+
 
 
 
