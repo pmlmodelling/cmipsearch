@@ -15,10 +15,8 @@ Documentation
    :maxdepth: 1
    :hidden:
    :caption: Getting Started
-#
+
    installing 
-#   merging_notebook 
-#   lazy_methods 
 
 
 
