@@ -12,6 +12,7 @@ Searching
    :toctree: generated/
 
    cmip6_search
+   download_all
 
 
 
