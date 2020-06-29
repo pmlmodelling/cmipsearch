@@ -10,6 +10,7 @@ Documentation
 **Getting Started**
 
 * :doc:`installing`
+* :doc:`How to use`
 
 .. toctree::
    :maxdepth: 1
@@ -17,6 +18,7 @@ Documentation
    :caption: Getting Started
 
    installing 
+   howto 
 
 
 
