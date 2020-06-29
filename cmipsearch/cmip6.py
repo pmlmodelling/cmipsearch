@@ -3,6 +3,25 @@
 # Keep an eye on this:
 # https://pcmdi.llnl.gov/CMIP6/ArchiveStatistics/esgf_data_holdings/ScenarioMIP/index.html
 
+import signal
+import time
+from contextlib import contextmanager
+
+class TimeoutException(Exception): pass
+
+
+@contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutException("Timed out!")
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+
 
 import os
 import pandas as pd
@@ -31,7 +50,9 @@ def cmip6_search(models = "all",
         year_range = None,
         frequency = "mon",
         variant = "all",
-        experiment = ["historical", "ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp460", "ssp585", "ssp534-over" ]):
+        experiment = ["historical", "ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp460", "ssp585", "ssp534-over" ],
+        wait = 60
+        ):
 
     """
     Search for CMIP6 data
@@ -50,6 +71,8 @@ def cmip6_search(models = "all",
         Variant id to search for. Defaults to searching for all.
     experiment: list or str
         Experiment(s) to search for. Defaults to searching for all historical and SSP scenarios.
+    wait: int
+        Time to wait (in seconds) for each node to responds. Defaults to 60.
 
 
     Returns:
@@ -81,7 +104,7 @@ def cmip6_search(models = "all",
     check_sums = []
 
     for url in url_list:
-        print(f"Getting files from {url}")
+        print(f"Searching {url}")
 
         new_url = url + "/esg-search/wget?project=CMIP6"
 
@@ -104,7 +127,11 @@ def cmip6_search(models = "all",
 
         new_url =f"{new_url}&limit=10000"
 
-        response = http.request("GET", new_url )
+        try:
+            with time_limit(wait):
+                response = http.request("GET", new_url )
+        except TimeoutException as e:
+            print(f"The node {url} was slow to respond, and was ignored.")
 
         lines = response.data.decode("utf-8").split("\n")
         tracker += 1
@@ -140,6 +167,7 @@ def cmip6_search(models = "all",
             if change_level == 1:
                 if "download_files" in line:
                     change_level = 2
+
     files = [x.replace("'", "") for x in files]
     urls = [x.replace("'", "") for x in urls]
     nodes = [x.replace("http://", "").split("/")[0] for x in urls]
