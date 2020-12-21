@@ -96,7 +96,7 @@ def cmip6_search(models = "all",
                 raise ValueError(f"{model} is not a valid CMIP6 model!")
 
     if frequency not in cmip_freq:
-        raise ValueError(f"{model} is not a valid CMIP6 model!")
+        raise ValueError(f"{frequency} is not a valid frequency!")
 
     tracker = 1
     files = []
