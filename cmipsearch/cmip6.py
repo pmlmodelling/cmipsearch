@@ -130,43 +130,44 @@ def cmip6_search(models = "all",
         try:
             with time_limit(wait):
                 response = http.request("GET", new_url )
+
+            lines = response.data.decode("utf-8").split("\n")
+            tracker += 1
+
+            change_level = 1
+
+            for line in lines:
+
+                if change_level == 2 and "dataset.file.url" in line:
+                    change_level = 3
+
+                if change_level == 2:
+                    orig_line = line
+                    years_avail = line[orig_line.index(".nc") -13:orig_line.index(".nc")]
+                    year_start = int(years_avail[:4])
+                    year_end = int(years_avail[7:11])
+                    # maybe remove this if statement later....
+                    if var in orig_line:
+                        if year_range is not None:
+                            if (year_start <= run_end and year_end >= run_start) or (year_end >= run_start and year_end <= run_end):
+                                files.append(line.split(" ")[0])
+                                urls.append(line.split(" ")[1])
+                                check_sums.append(line.split(" ")[3])
+                        else:
+                            files.append(line.split(" ")[0].replace("'", ""))
+                            urls.append(line.split(" ")[1].replace("'", ""))
+                            urls.append(line.split(" ")[1].replace("'", ""))
+                            check_sums.append(line.split(" ")[3])
+
+
+    	    # Now pull out the years
+
+                if change_level == 1:
+                    if "download_files" in line:
+                        change_level = 2
+
         except TimeoutException as e:
             print(f"The node {url} was slow to respond, and was ignored.")
-
-        lines = response.data.decode("utf-8").split("\n")
-        tracker += 1
-
-        change_level = 1
-
-        for line in lines:
-
-            if change_level == 2 and "dataset.file.url" in line:
-                change_level = 3
-
-            if change_level == 2:
-                orig_line = line
-                years_avail = line[orig_line.index(".nc") -13:orig_line.index(".nc")]
-                year_start = int(years_avail[:4])
-                year_end = int(years_avail[7:11])
-                # maybe remove this if statement later....
-                if var in orig_line:
-                    if year_range is not None:
-                        if (year_start <= run_end and year_end >= run_start) or (year_end >= run_start and year_end <= run_end):
-                            files.append(line.split(" ")[0])
-                            urls.append(line.split(" ")[1])
-                            check_sums.append(line.split(" ")[3])
-                    else:
-                        files.append(line.split(" ")[0].replace("'", ""))
-                        urls.append(line.split(" ")[1].replace("'", ""))
-                        urls.append(line.split(" ")[1].replace("'", ""))
-                        check_sums.append(line.split(" ")[3])
-
-
-    	# Now pull out the years
-
-            if change_level == 1:
-                if "download_files" in line:
-                    change_level = 2
 
     files = [x.replace("'", "") for x in files]
     urls = [x.replace("'", "") for x in urls]
