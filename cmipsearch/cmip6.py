@@ -104,7 +104,6 @@ def cmip6_search(models = "all",
     check_sums = []
 
     for url in url_list:
-        print(f"Searching {url}")
 
         new_url = url + "/esg-search/wget?project=CMIP6"
 
