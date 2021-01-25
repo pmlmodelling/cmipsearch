@@ -32,7 +32,7 @@ from cmipsearch.models import cmip6_models
 
 # List of possible mirrors
 
-url_list = [
+url_list1 = [
 		"http://esgf.nccs.nasa.gov",
 		"http://esgf-node.llnl.gov",
 		"http://esgf-node.ipsl.upmc.fr",
@@ -51,8 +51,12 @@ def cmip5_search(models = "all",
         frequency = "mon",
         variant = "all",
         experiment = ["historical", "rcp26", "rcp45" , "rcp60", "rcp85"],
-        wait = 60
+        wait = 60,
+        url_list = "default"
         ):
+
+    if url_list == "default":
+        url_list = url_list1
 
     """
     Search for CMIP6 data
@@ -90,13 +94,13 @@ def cmip5_search(models = "all",
         if type(models) is str:
             models = [models]
 
-    if models != "all":
-        for model in models:
-            if model not in cmip6_models():
-                raise ValueError(f"{model} is not a valid CMIP5 model!")
+    #if models != "all":
+    #    for model in models:
+    #        if model not in cmip6_models():
+    #            raise ValueError(f"{model} is not a valid CMIP5 model!")
 
     if frequency not in cmip_freq:
-        raise ValueError(f"{model} is not a valid CMIP5 model!")
+        raise ValueError(f"{frequency} is not a valid frequency!")
 
     tracker = 1
     files = []
@@ -110,7 +114,7 @@ def cmip5_search(models = "all",
 
         if models != "all":
             for model in models:
-                new_url = f"{new_url}&source_id={model}"
+                new_url = f"{new_url}&model={model}"
 
         if var is not None:
             new_url = f"{new_url}&variable={var}"
@@ -155,7 +159,6 @@ def cmip5_search(models = "all",
                                 check_sums.append(line.split(" ")[3])
                         else:
                             files.append(line.split(" ")[0].replace("'", ""))
-                            urls.append(line.split(" ")[1].replace("'", ""))
                             urls.append(line.split(" ")[1].replace("'", ""))
                             check_sums.append(line.split(" ")[3])
 
