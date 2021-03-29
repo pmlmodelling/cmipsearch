@@ -28,7 +28,7 @@ import pandas as pd
 import urllib3
 
 http = urllib3.PoolManager()
-from cmipsearch.models import cmip6_models
+from cmipsearch.parameters import cmip6_models
 
 
 # List of possible mirrors
