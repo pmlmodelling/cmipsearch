@@ -112,6 +112,9 @@ def cmip6_search(
 
     """
 
+    if type(experiment) is str:
+        experiment = [experiment]
+
     if year_range is not None:
         run_start = year_range[0]
         run_end = year_range[1]
@@ -155,6 +158,8 @@ def cmip6_search(
                 new_url = f"{new_url}&variant_label={vv}"
 
         new_url = f"{new_url}&limit=10000"
+
+        print(new_url)
 
         try:
             with time_limit(wait):
