@@ -91,8 +91,8 @@ def cmip6_search(
     -------------
     models: list or str
         Models to download. Defaults to "all", which results in all available models being downloaded. For a list of models call cmip6_models.
-    var: str
-        Variable to search for.
+    var: str or list
+        Variable or list of variables to search for.
     frequency: str
         Time frequency to search for. Monthly is "mon". Daily is "day".
     year_range: list
@@ -136,6 +136,9 @@ def cmip6_search(
     urls = []
     check_sums = []
 
+    if type(var) is str and var is not None:
+        var = [var]
+
     for url in url_list:
 
         new_url = url + "/esg-search/wget?project=CMIP6"
@@ -145,7 +148,8 @@ def cmip6_search(
                 new_url = f"{new_url}&source_id={model}"
 
         if var is not None:
-            new_url = f"{new_url}&variable={var}"
+            for vv in var:
+                new_url = f"{new_url}&variable={vv}"
 
         new_url = f"{new_url}&frequency={frequency}"
         for ee in experiment:
@@ -158,8 +162,6 @@ def cmip6_search(
                 new_url = f"{new_url}&variant_label={vv}"
 
         new_url = f"{new_url}&limit=10000"
-
-        print(new_url)
 
         try:
             with time_limit(wait):
@@ -183,18 +185,23 @@ def cmip6_search(
                     year_start = int(years_avail[:4])
                     year_end = int(years_avail[7:11])
                     # maybe remove this if statement later....
-                    if var in orig_line:
-                        if year_range is not None:
-                            if (year_start <= run_end and year_end >= run_start) or (
-                                year_end >= run_start and year_end <= run_end
-                            ):
-                                files.append(line.split(" ")[0])
-                                urls.append(line.split(" ")[1])
+                    if var is not None:
+                        check = False
+                        for vv in var:
+                            if vv in orig_line:
+                                check = True
+                        if check:
+                            if year_range is not None:
+                                if (year_start <= run_end and year_end >= run_start) or (
+                                    year_end >= run_start and year_end <= run_end
+                                ):
+                                    files.append(line.split(" ")[0])
+                                    urls.append(line.split(" ")[1])
+                                    check_sums.append(line.split(" ")[3])
+                            else:
+                                files.append(line.split(" ")[0].replace("'", ""))
+                                urls.append(line.split(" ")[1].replace("'", ""))
                                 check_sums.append(line.split(" ")[3])
-                        else:
-                            files.append(line.split(" ")[0].replace("'", ""))
-                            urls.append(line.split(" ")[1].replace("'", ""))
-                            check_sums.append(line.split(" ")[3])
 
                 # Now pull out the years
 
