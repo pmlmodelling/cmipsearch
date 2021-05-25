@@ -3,3 +3,4 @@ from cmipsearch.cmip5 import cmip5_search
 from cmipsearch.parameters import cmip6_models
 from cmipsearch.parameters import cmip6_experiments
 from cmipsearch.downloader import download_all
+from cmipsearch.find import find_variable
