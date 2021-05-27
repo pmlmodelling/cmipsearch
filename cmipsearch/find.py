@@ -1,7 +1,11 @@
 import pandas as pd
+import pkg_resources
 
 
-all_df = pd.read_csv("cmipsearch/data/cmip6_variables.csv")
+
+stream = pkg_resources.resource_stream(__name__, 'data/cmip6_variables.csv')
+
+all_df = pd.read_csv(stream)
 
 
 def find_variable(var = None, cmip = "cmip6"):

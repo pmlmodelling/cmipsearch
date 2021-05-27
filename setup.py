@@ -42,6 +42,8 @@ setup(name='cmipsearch',
         'wheel',
     ],
       install_requires = "pandas",
+      include_package_data=True,
+      package_data={'': ['data/*.csv']},
       zip_safe=False)
 
 
