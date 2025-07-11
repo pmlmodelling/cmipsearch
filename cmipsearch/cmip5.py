@@ -40,7 +40,7 @@ url_list1 = [
     "http://esg-dn1.nsc.liu.se",
     "http://esgf-data.dkrz.de",
     "http://esgf-index1.ceda.ac.uk",
-    "http://esg.pik-potsdam.de",
+    # "http://esg.pik-potsdam.de",
     "http://esgf.nci.org.au",
 ]
 # available frequencies
@@ -151,8 +151,8 @@ def cmip5_search(
         new_url = f"{new_url}&limit=10000"
 
         try:
-            with time_limit(wait):
-                response = http.request("GET", new_url)
+            # with time_limit(wait):
+            response = http.request("GET", new_url)
 
             lines = response.data.decode("utf-8").split("\n")
             tracker += 1

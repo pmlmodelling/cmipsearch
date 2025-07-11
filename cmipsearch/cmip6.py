@@ -35,13 +35,37 @@ from cmipsearch.parameters import cmip6_models
 
 url_list = [
     "http://esgf.nccs.nasa.gov",
+
     "http://esgf-node.llnl.gov",
     "http://esgf-node.ipsl.upmc.fr",
     "http://esg-dn1.nsc.liu.se",
     "http://esgf-data.dkrz.de",
     "http://esgf-index1.ceda.ac.uk",
-    "http://esg.pik-potsdam.de",
+    "http://esgf.ceda.ac.uk",
+    "http://esgf.dwd.de",
     "http://esgf.nci.org.au",
+    "http://esgf.rcec.sinica.edu.tw/",
+    "http://esg.camscma.cn",
+    "http://esg-cccr.tropmet.res.in",
+    "http://esgf-data2.llnl.gov", 
+    "http://aims3.llnl.gov",
+    "http://cmip.fio.org.cn",
+    #"http://polaris.pknu.ac.kr",
+    "http://crd-esgf-drc.ec.gc.ca",
+    #"http://esgf-node2.cmcc.it", 
+    # "http://esgf-node.cmcc.it",
+    "http://esg2.umr-cnrm.fr",
+    "http://esgf3.dkrz.de", 
+    "http://esgf1.dkrz.de", 
+    # "http://esgf2.dkrz.de",
+    "http://vesg.ipsl.upmc.fr", 
+    "http://data.meteo.unican.es",
+    "http://esgf.ceda.ac.uk",
+    "http://dataserver.nccs.nasa.gov", 
+    "http://dpesgf03.nccs.nasa.gov", 
+    "http://esgf.nccs.nasa.gov"
+
+
 ]
 # available frequencies
 cmip_freq = [
@@ -140,77 +164,81 @@ def cmip6_search(
         var = [var]
 
     for url in url_list:
-
-        new_url = url + "/esg-search/wget?project=CMIP6"
-
-        if models != "all":
-            for model in models:
-                new_url = f"{new_url}&source_id={model}"
-
-        if var is not None:
-            for vv in var:
-                new_url = f"{new_url}&variable={vv}"
-
-        new_url = f"{new_url}&frequency={frequency}"
-        for ee in experiment:
-            new_url = f"{new_url}&experiment_id={ee}"
-
-        if variant != "all":
-            if type(variant) is str:
-                variant = [variant]
-            for vv in variant:
-                new_url = f"{new_url}&variant_label={vv}"
-
-        new_url = f"{new_url}&limit=10000"
-
         try:
-            with time_limit(wait):
-                response = http.request("GET", new_url)
+            # code to be executed
 
-            lines = response.data.decode("utf-8").split("\n")
-            tracker += 1
+            new_url = url + "/esg-search/wget?project=CMIP6"
 
-            change_level = 1
+            if models != "all":
+                for model in models:
+                    new_url = f"{new_url}&source_id={model}"
 
-            for line in lines:
+            if var is not None:
+                for vv in var:
+                    new_url = f"{new_url}&variable={vv}"
 
-                if change_level == 2 and "dataset.file.url" in line:
-                    change_level = 3
+            new_url = f"{new_url}&frequency={frequency}"
+            for ee in experiment:
+                new_url = f"{new_url}&experiment_id={ee}"
 
-                if change_level == 2:
-                    orig_line = line
-                    years_avail = line[
-                        orig_line.index(".nc") - 13 : orig_line.index(".nc")
-                    ]
-                    year_start = int(years_avail[:4])
-                    year_end = int(years_avail[7:11])
-                    # maybe remove this if statement later....
-                    if var is not None:
-                        check = False
-                        for vv in var:
-                            if vv in orig_line:
-                                check = True
-                        if check:
-                            if year_range is not None:
-                                if (year_start <= run_end and year_end >= run_start) or (
-                                    year_end >= run_start and year_end <= run_end
-                                ):
-                                    files.append(line.split(" ")[0])
-                                    urls.append(line.split(" ")[1])
+            if variant != "all":
+                if type(variant) is str:
+                    variant = [variant]
+                for vv in variant:
+                    new_url = f"{new_url}&variant_label={vv}"
+
+            new_url = f"{new_url}&limit=10000"
+
+            try:
+                with time_limit(wait):
+                    response = http.request("GET", new_url)
+
+                lines = response.data.decode("utf-8").split("\n")
+                tracker += 1
+
+                change_level = 1
+
+                for line in lines:
+
+                    if change_level == 2 and "dataset.file.url" in line:
+                        change_level = 3
+
+                    if change_level == 2:
+                        orig_line = line
+                        years_avail = line[
+                            orig_line.index(".nc") - 13 : orig_line.index(".nc")
+                        ]
+                        year_start = int(years_avail[:4])
+                        year_end = int(years_avail[7:11])
+                        # maybe remove this if statement later....
+                        if var is not None:
+                            check = False
+                            for vv in var:
+                                if vv in orig_line:
+                                    check = True
+                            if check:
+                                if year_range is not None:
+                                    if (year_start <= run_end and year_end >= run_start) or (
+                                        year_end >= run_start and year_end <= run_end
+                                    ):
+                                        files.append(line.split(" ")[0])
+                                        urls.append(line.split(" ")[1])
+                                        check_sums.append(line.split(" ")[3])
+                                else:
+                                    files.append(line.split(" ")[0].replace("'", ""))
+                                    urls.append(line.split(" ")[1].replace("'", ""))
                                     check_sums.append(line.split(" ")[3])
-                            else:
-                                files.append(line.split(" ")[0].replace("'", ""))
-                                urls.append(line.split(" ")[1].replace("'", ""))
-                                check_sums.append(line.split(" ")[3])
 
-                # Now pull out the years
+                    # Now pull out the years
 
-                if change_level == 1:
-                    if "download_files" in line:
-                        change_level = 2
+                    if change_level == 1:
+                        if "download_files" in line:
+                            change_level = 2
 
-        except TimeoutException as e:
-            print(f"The node {url} was slow to respond, and was ignored.")
+            except TimeoutException as e:
+                print(f"The node {url} was slow to respond, and was ignored.")
+        except:
+            print(f"The node {url} was not responding, and was ignored.")
 
     files = [x.replace("'", "") for x in files]
     urls = [x.replace("'", "") for x in urls]
