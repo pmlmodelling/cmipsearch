@@ -16,7 +16,7 @@ This package will work with Python 3.6 upwards.
 
 You can install the development version of cmipsearch using using pip as follows.
 ```sh
-pip install git+https://github.com/r4ecology/cmipsearch.git
+pip install git+https://github.com/pmlmodelling/cmipsearch.git
 ```
 
 
